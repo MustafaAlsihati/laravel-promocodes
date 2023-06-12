@@ -20,7 +20,13 @@ class Promocode extends Model implements PromocodeContract
      * @var string[]
      */
     protected $fillable = [
-        'user_id', 'code', 'usages_left', 'bound_to_user', 'multi_use', 'details', 'expired_at',
+        'user_id',
+        'code',
+        'usages_left',
+        'bound_to_user',
+        'multi_use',
+        'details',
+        'expired_at',
     ];
 
     /**
@@ -133,7 +139,10 @@ class Promocode extends Model implements PromocodeContract
      */
     public function appliedByUser(Model $user): bool
     {
-        return $this->users()->where(DB::raw('users.id'), $user->id)->exists();
+        // Thanks to @zgabievi for the solve this issue
+        // https://github.com/zgabievi/laravel-promocodes/pull/103/commits/fc56df729b34ffb1393dcd7dae833870e6e01a75
+
+        return $this->users()->where(DB::raw(config('promocodes.models.users.table_name') . '.id'), $user->id)->exists();
     }
 
     /**
