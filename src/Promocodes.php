@@ -229,10 +229,12 @@ class Promocodes
                 throw new PromocodeAlreadyUsedByUserException($this->user, $this->code);
             }
 
-            $this->user->appliedPromocodes()->attach($this->promocode, ['session_id' => Session::getId()]);
+            $promocode_id = $this->promocode->id;
 
-            if ($this->promocode->bound_to_user && $this->promocode->user_id === null) {
+            $this->user->appliedPromocodes()->attach($this->promocode, ['session_id' => Session::getId()]);
+            if ($this->promocode->bound_to_user && $this->promocode->user === null) {
                 $this->promocode->user()->associate($this->user);
+                $this->promocode->id = $promocode_id;
                 $this->promocode->save();
             }
 
